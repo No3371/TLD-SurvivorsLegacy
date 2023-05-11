@@ -26,7 +26,19 @@ namespace SurvivorsLegacy
 		}
 		void Test ()
 		{
-			GearItem.InstantiateGearItem("TEST_CRASH");
+			Record rec;
+			rec.days = 999;
+			rec.note = "test__test__test__";
+			rec.items = new string[] {  "GEAR_Revolver", "GEAR_Revolver", "GEAR_Revolver"  };
+			var msg = MelonLoader.TinyJSON.Encoder.Encode(rec);
+			MelonLogger.Msg($"test message prepared: {msg}");
+			var emsg = AesOperation.EncryptString(msg);
+			MelonLogger.Msg($"test message encryted: {emsg}");
+			var dmsg = AesOperation.DecryptString(emsg);
+			MelonLogger.Msg($"test message descrypted: {dmsg}");
+			MelonLogger.Msg($"passed: {dmsg==msg}");
+			
+			
 		}
 		void LegacyHere ()
 		{
@@ -69,90 +81,6 @@ namespace SurvivorsLegacy
 		}
 	}
 
-	// [HarmonyPatch(typeof(Container), nameof(Container.InstantiateContents))]
-	// internal static class CorpsePatch
-	// {
-	// 	static Task<HttpResponseMessage> get;
-	// 	static void Prefix (Container __instance)
-	// 	{
-	// 		if (!__instance.m_IsCorpse || __instance.IsInspected() || SceneTracker.CurrentScenePopulated) return;
-	// 		if (SurvivorsLegacy.Instance.resolver == null) SurvivorsLegacy.Instance.resolver = MelonCoroutines.Start(QueueResolver(__instance));
-	// 	}
-
-	// 	static IEnumerator QueueResolver (Container container)
-	// 	{
-	// 		var http = new HttpClient();
-	// 		http.Timeout = TimeSpan.FromSeconds(1);
-	// 		for (int i = 0; i < 1 ; i++)
-	// 		{
-	// 			MelonLogger.Msg($"Getting legacy for corpse {container.name} at {container.gameObject.transform.position}");
-
-	// 			get = http.GetAsync($"https://patchbay.hub/tld-survivorslegacy-{sceneName}");
-	// 			MelonLogger.Msg($"Getting from https://patchbay.hub/tld-survivorslegacy-{sceneName}");
-	// 			yield return new WaitForSeconds(1.5f);
-	// 			if (!get.IsCompletedSuccessfully)
-	// 			{
-	// 				MelonLogger.Msg($"GET failed!");
-	// 				break;
-	// 			}
-
-	// 			var msg = get.Result.Content.ReadAsStringAsync().Result;
-	// 			MelonLogger.Msg($"Fetched record msg: {msg}");
-	// 			var record = Decode(msg);
-	// 			if (!record.HasValue) continue;
-	// 			MelonLogger.Msg($"Decoded.");
-	// 			if (container == null) continue;
-	// 			if (SceneTracker.CurrentScene != sceneName)
-	// 			{
-	// 				MelonLogger.Msg($"Abort for scene changed.");
-	// 				break;
-	// 			}
-	// 			ApplyRecordToContainer(record.Value, container);
-	// 			SceneTracker.CurrentScenePopulated = true;
-	// 			SurvivorsLegacy.Instance.ModData.Save("Y", sceneName);
-	// 			break;
-	// 		}
-	// 		SurvivorsLegacy.Instance.resolver = null;
-	// 	}
-
-	// 	static Record? Decode (string msg)
-	// 	{
-	// 		var proxy = MelonLoader.TinyJSON.Decoder.Decode(msg) as MelonLoader.TinyJSON.ProxyObject;
-	// 		if (proxy == null) return null;
-
-	// 		if (!proxy.TryGetValue("days", out var days)
-	// 		 || proxy["items"] == null)
-	// 			return null;
-
-	// 		var itemArr = proxy["items"] as ProxyArray;
-	// 		string[]? items = null;
-	// 		if (itemArr != null)
-	// 		{
-	// 			items = new string[itemArr.Count];
-	// 			for (int i = 0; i < itemArr.Count; i++) items[i] = itemArr[i];
-	// 		}
-	// 		else return null;
-
-	// 		Record record;
-	// 		record.days = days;
-	// 		record.items = items;
-	// 		return record;
-
-	// 	}
-
-	// 	static void ApplyRecordToContainer (Record record, Container container)
-	// 	{
-	// 		if (record.items != null)
-	// 			foreach (var item in record.items)
-	// 			{
-	// 				var gi = GearItem.InstantiateGearItem(item);
-	// 				gi.RollGearCondition(false);
-	// 				container.AddGear(gi);
-	// 				MelonLogger.Msg($"Added {item} to {container.name} at {container.gameObject.transform.position}");
-	// 			}
-	// 	}
-	// }
-
 	[HarmonyPatch(typeof(Condition), nameof(Condition.PlayerDeath))]
 	internal static class SendLegacyOnDeath
 	{
@@ -192,6 +120,7 @@ namespace SurvivorsLegacy
 
             HttpClient sender = SurvivorsLegacy.Instance.LegacySenderHttp;
             sender.CancelPendingRequests();
+			msg = AesOperation.EncryptString(msg);
 			var post = sender.PostAsync($"https://patchbay.pub/tld-survivorslegacy-{scene}", new StringContent(msg));
 			MelonLogger.Msg($"Posting legacy...");
 			var w = new WaitForSecondsRealtime(60);
@@ -260,7 +189,7 @@ namespace SurvivorsLegacy
 			}
 			SurvivorsLegacy.Instance.LegacyReceiverHttp.CancelPendingRequests();
 			var sceneName = SceneLegacies.CurrentScene;
-			get = SurvivorsLegacy.Instance.LegacyReceiverHttp.GetAsync($"https://patchbay.pub/tld-survivorslegacy-{sceneName}");
+			get = SurvivorsLegacy.Instance.LegacyReceiverHttp.GetAsync($"https://patchbay.pub/tld-survivorslegacy-{sceneName}-encrypted");
 			// MelonLogger.Msg($"Getting legacy from https://patchbay.pub/tld-survivorslegacy-{sceneName}");
 			yield return new WaitForSeconds(1.5f);
 			if (!get.IsCompletedSuccessfully)
@@ -276,6 +205,7 @@ namespace SurvivorsLegacy
 			}
 			var msg = task.Result;
 			// MelonLogger.Msg($"Fetched record msg: {msg}");
+			msg = AesOperation.DecryptString(msg);
 			var record = Decode(msg);
 			if (!record.HasValue)
 			{
@@ -370,7 +300,7 @@ namespace SurvivorsLegacy
 				}
 		}
 
-		static Record? Decode (string msg)
+		internal static Record? Decode (string msg)
 		{
 			var proxy = MelonLoader.TinyJSON.Decoder.Decode(msg) as MelonLoader.TinyJSON.ProxyObject;
 			if (proxy == null) return null;
