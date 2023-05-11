@@ -20,25 +20,8 @@ namespace SurvivorsLegacy
 		public override void OnInitializeMelon()
 		{
 			Instance = this;
-			uConsole.RegisterCommand("sl_test", new Action(Test));
 			uConsole.RegisterCommand("sl_here", new Action(LegacyHere));
 			uConsole.RegisterCommand("sl_l", new Action(Legacies));
-		}
-		void Test ()
-		{
-			Record rec;
-			rec.days = 999;
-			rec.note = "test__test__test__";
-			rec.items = new string[] {  "GEAR_Revolver", "GEAR_Revolver", "GEAR_Revolver"  };
-			var msg = MelonLoader.TinyJSON.Encoder.Encode(rec);
-			MelonLogger.Msg($"test message prepared: {msg}");
-			var emsg = AesOperation.EncryptString(msg);
-			MelonLogger.Msg($"test message encryted: {emsg}");
-			var dmsg = AesOperation.DecryptString(emsg);
-			MelonLogger.Msg($"test message descrypted: {dmsg}");
-			MelonLogger.Msg($"passed: {dmsg==msg}");
-			
-			
 		}
 		void LegacyHere ()
 		{
@@ -122,7 +105,8 @@ namespace SurvivorsLegacy
             sender.CancelPendingRequests();
 			msg = AesOperation.EncryptString(msg);
 			var sceneNameEncrypted = AesOperation.EncryptString(sceneName);
-			var post = sender.PostAsync($"https://patchbay.pub/tld-survivorslegacy-{sceneNameEncrypted}", new StringContent(msg));
+			var b64 = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(sceneNameEncrypted));
+			var post = sender.PostAsync($"https://patchbay.pub/tld-survivorslegacy-{b64}", new StringContent(msg));
 			MelonLogger.Msg($"Posting legacy...");
 			var w = new WaitForSecondsRealtime(60);
 			while (true)
@@ -133,7 +117,7 @@ namespace SurvivorsLegacy
 				{
 					MelonLogger.Msg($"Restarting POST...");
 					post.Dispose();
-					post = sender.PostAsync($"https://patchbay.pub/tld-survivorslegacy-{sceneNameEncrypted}", new StringContent(msg));
+					post = sender.PostAsync($"https://patchbay.pub/tld-survivorslegacy-{b64}", new StringContent(msg));
 				}
 			}
 			MelonLogger.Msg($"Legacy sent!");
@@ -191,8 +175,9 @@ namespace SurvivorsLegacy
 			SurvivorsLegacy.Instance.LegacyReceiverHttp.CancelPendingRequests();
 			var sceneName = SceneLegacies.CurrentScene;
 			var sceneNameEncrypted = AesOperation.EncryptString(sceneName);
-			get = SurvivorsLegacy.Instance.LegacyReceiverHttp.GetAsync($"https://patchbay.pub/tld-survivorslegacy-{sceneNameEncrypted}");
-			// MelonLogger.Msg($"Getting legacy from https://patchbay.pub/tld-survivorslegacy-{sceneName}");
+			var b64 = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(sceneNameEncrypted));
+			get = SurvivorsLegacy.Instance.LegacyReceiverHttp.GetAsync($"https://patchbay.pub/tld-survivorslegacy-{b64}");
+			// MelonLogger.Msg($"Getting legacy from https://patchbay.pub/tld-survivorslegacy-{b64}");
 			yield return new WaitForSeconds(1.5f);
 			if (!get.IsCompletedSuccessfully)
 			{
