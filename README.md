@@ -1,4 +1,4 @@
-# Survival's Legacy
+# Survivor's Legacy
 
 > Take my stuff with you...
 >
