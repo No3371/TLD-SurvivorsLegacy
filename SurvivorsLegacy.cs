@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using HarmonyLib;
 using Il2Cpp;
+using Il2CppTLD.Gear;
 using Il2CppTLD.Scenes;
 using MelonLoader;
 using MelonLoader.TinyJSON;
@@ -20,29 +21,12 @@ namespace SurvivorsLegacy
 		{
 			Instance = this;
 			uConsole.RegisterCommand("sl_test", new Action(Test));
-			uConsole.RegisterCommand("sl_test2", new Action(Test2));
 			uConsole.RegisterCommand("sl_here", new Action(LegacyHere));
 			uConsole.RegisterCommand("sl_l", new Action(Legacies));
 		}
 		void Test ()
 		{
-			InterfaceManager.GetPanel<Panel_HUD>().m_CollectibleNoteObjectText.text = Time.time.ToString();
-			InterfaceManager.GetPanel<Panel_HUD>().m_CollectibleNoteObjectText.ProcessAndRequest();
-			// InterfaceManager.GetPanel<Panel_HUD>().m_CollectibleNoteScrollView.gameObject.SetActive(true);
-			InterfaceManager.GetPanel<Panel_HUD>().m_CollectibleNoteObject.gameObject.SetActive(true);
-			
-			// s[0] = "tset";
-			// var table = Localization.s_CurrentLanguageStringTable;
-			// foreach(var l in table.m_Languages)
-			// 	MelonLogger.Msg(l);
-			// if (table.DoesKeyExist("survivorslegacy_test"))
-			// 	table.AddOrUpdateTableEntry("survivorslegacy_test", s, new int[] {0});
-			// table.GetEntryFromKey()
-		}
-		void Test2 ()
-		{
-			// InterfaceManager.GetPanel<Panel_HUD>().m_CollectibleNoteScrollView.gameObject.SetActive(true);
-			InterfaceManager.GetPanel<Panel_HUD>().m_CollectibleNoteObject.gameObject.SetActive(false);
+			GearItem.InstantiateGearItem("TEST_CRASH");
 		}
 		void LegacyHere ()
 		{
@@ -243,7 +227,7 @@ namespace SurvivorsLegacy
 			CurrentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 			if (CurrentScene.StartsWith("MainMenu") || CurrentScene.StartsWith("Boot") || CurrentScene.StartsWith("empty"))
 				return;
-			MelonLogger.Msg($"{CurrentScene}");
+			// MelonLogger.Msg($"{CurrentScene}");
 			CurrentScenePopulated = false;
 			CurrentScenePopulated = SurvivorsLegacy.Instance.ModData.Load(CurrentScene) == "Y";
 			if (CurrentScenePopulated)
@@ -281,13 +265,13 @@ namespace SurvivorsLegacy
 			yield return new WaitForSeconds(1.5f);
 			if (!get.IsCompletedSuccessfully)
 			{
-				MelonLogger.Msg($"GET failed!");
+				// MelonLogger.Msg($"GET failed!");
 				yield break;
 			}
 			var task = get.Result.Content.ReadAsStringAsync();
 			if (!task.IsCompletedSuccessfully)
 			{
-				MelonLogger.Msg($"Abort for failed read.");
+				// MelonLogger.Msg($"Abort for failed read.");
 				yield break;
 			}
 			var msg = task.Result;
@@ -295,7 +279,7 @@ namespace SurvivorsLegacy
 			var record = Decode(msg);
 			if (!record.HasValue)
 			{
-				MelonLogger.Msg($"Abort for invalid msg.");
+				// MelonLogger.Msg($"Abort for invalid msg.");
 				yield break;
 			}
 			// MelonLogger.Msg($"Decoded.");
@@ -378,6 +362,7 @@ namespace SurvivorsLegacy
 				foreach (var item in record.items)
 				{
 					var gi = GearItem.InstantiateGearItem(item);
+					if (gi == null) continue;
 					gi.RollGearCondition(true);
 					// MelonLogger.Msg($"Gear condition rolled to " + gi.GetRoundedCondition());
 					container.AddGear(gi);
