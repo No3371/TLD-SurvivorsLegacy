@@ -384,8 +384,9 @@ namespace SurvivorsLegacy
 			string[]? items = null;
 			if (itemArr != null)
 			{
-				items = new string[itemArr.Count];
-				for (int i = 0; i < itemArr.Count; i++) items[i] = itemArr[i];
+				var count = Mathf.Min(itemArr.Count, 3);
+				items = new string[count];
+				for (int i = 0; i < count; i++) items[i] = itemArr[i];
 			}
 			else return null;
 
