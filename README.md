@@ -25,7 +25,7 @@ On the other hand, when you enter a region you will receive others' legacy when 
 
 The received legacy will be inserted into a random unsearched corpse. When you get up close, you will see:
 - How many days does the legacy sender survived
-- The content of his ingame general note
+- The content of his ingame general note. If it's emoty, it will be replaced with general text.
 
 And the legacy items can be found on the corpse.
 
