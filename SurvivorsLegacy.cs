@@ -265,7 +265,7 @@ namespace SurvivorsLegacy
                 SurvivorsLegacy.Instance.ModData.Save(MelonLoader.TinyJSON.Encoder.Encode(transform.position), $"{sceneName}.here");
                 SurvivorsLegacy.Instance.ModData.Save(fetched.days.ToString(), $"{sceneName}.days");
 				// MelonLogger.Msg($"Added sruvivor's legacy. Saving...");
-				MelonLogger.Msg($"Added sruvivor's legacy. Saved.");
+				MelonLogger.Msg($"Added survivor's legacy. Saved.");
 				if (!string.IsNullOrWhiteSpace(fetched.note)) SurvivorsLegacy.Instance.ModData.Save(fetched.note, $"{sceneName}.note");
 				// MelonLogger.Msg($"Added sruvivor's legacy to {SurvivorsLegacy.Instance.ModData.Load($"{sceneName}.corpse")} in {SceneLegacies.CurrentScene} / {sceneName}.");
 				break;
