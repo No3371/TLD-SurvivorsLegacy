@@ -110,7 +110,7 @@ namespace SurvivorsLegacy
 			SurvivorsLegacy.Instance.LegacySender = MelonCoroutines.Start(Send(SceneLegacies.CurrentScene, msg));
 		}
 
-		static IEnumerator Send (string scene, string msg)
+		static IEnumerator Send (string sceneName, string msg)
 		{
 			if (SurvivorsLegacy.Instance.LegacySenderHttp == null)
 			{
@@ -121,7 +121,8 @@ namespace SurvivorsLegacy
             HttpClient sender = SurvivorsLegacy.Instance.LegacySenderHttp;
             sender.CancelPendingRequests();
 			msg = AesOperation.EncryptString(msg);
-			var post = sender.PostAsync($"https://patchbay.pub/tld-survivorslegacy-{scene}", new StringContent(msg));
+			var sceneNameEncrypted = AesOperation.EncryptString(sceneName);
+			var post = sender.PostAsync($"https://patchbay.pub/tld-survivorslegacy-{sceneNameEncrypted}", new StringContent(msg));
 			MelonLogger.Msg($"Posting legacy...");
 			var w = new WaitForSecondsRealtime(60);
 			while (true)
@@ -132,7 +133,7 @@ namespace SurvivorsLegacy
 				{
 					MelonLogger.Msg($"Restarting POST...");
 					post.Dispose();
-					post = sender.PostAsync($"https://patchbay.pub/tld-survivorslegacy-{scene}", new StringContent(msg));
+					post = sender.PostAsync($"https://patchbay.pub/tld-survivorslegacy-{sceneNameEncrypted}", new StringContent(msg));
 				}
 			}
 			MelonLogger.Msg($"Legacy sent!");
@@ -189,7 +190,8 @@ namespace SurvivorsLegacy
 			}
 			SurvivorsLegacy.Instance.LegacyReceiverHttp.CancelPendingRequests();
 			var sceneName = SceneLegacies.CurrentScene;
-			get = SurvivorsLegacy.Instance.LegacyReceiverHttp.GetAsync($"https://patchbay.pub/tld-survivorslegacy-{sceneName}-encrypted");
+			var sceneNameEncrypted = AesOperation.EncryptString(sceneName);
+			get = SurvivorsLegacy.Instance.LegacyReceiverHttp.GetAsync($"https://patchbay.pub/tld-survivorslegacy-{sceneNameEncrypted}");
 			// MelonLogger.Msg($"Getting legacy from https://patchbay.pub/tld-survivorslegacy-{sceneName}");
 			yield return new WaitForSeconds(1.5f);
 			if (!get.IsCompletedSuccessfully)
