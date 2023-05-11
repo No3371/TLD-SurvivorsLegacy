@@ -1,4 +1,4 @@
-﻿namespace AlcoholMod
+﻿namespace SurvivorsLegacy
 {
 	public static class BuildInfo
 	{

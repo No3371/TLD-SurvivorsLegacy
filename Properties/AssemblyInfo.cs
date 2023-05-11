@@ -1,7 +1,7 @@
 ﻿using MelonLoader;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using BuildInfo = AlcoholMod.BuildInfo;
+using BuildInfo = SurvivorsLegacy.BuildInfo;
 
 [assembly: ComVisible(false)]
 [assembly: Guid("5c0dfb41-a109-48e8-9b78-a05c0b4be5c6")]
