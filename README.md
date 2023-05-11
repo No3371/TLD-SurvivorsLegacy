@@ -21,7 +21,7 @@ The sending operation stops when:
 On the other hand, when you enter a region you will receive others' legacy when all these conditions are met:
 - There is unsearched corpse in the region
 - You have not received any legacy in the region
-- Another player is posting their legacy
+- Another player who died in this region is posting their legacy
 
 The received legacy will be inserted into a random unsearched corpse. When you get up close, you will see:
 - How many days does the legacy sender survived
