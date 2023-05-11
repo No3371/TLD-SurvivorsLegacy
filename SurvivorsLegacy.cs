@@ -272,6 +272,7 @@ namespace SurvivorsLegacy
 			{
 				SurvivorsLegacy.Instance.LegacyReceiverHttp = new HttpClient();
 				SurvivorsLegacy.Instance.LegacyReceiverHttp.Timeout = TimeSpan.FromSeconds(3);
+				SurvivorsLegacy.Instance.LegacyReceiverHttp.MaxResponseContentBufferSize = 8192;
 			}
 			SurvivorsLegacy.Instance.LegacyReceiverHttp.CancelPendingRequests();
 			var sceneName = SceneLegacies.CurrentScene;
