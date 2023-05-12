@@ -20,15 +20,15 @@ A legacy contains:
 
 The sending operation stops when:
 - You close the game (of course, it's not rumning anymore)
-- The data is sent
+- The legacy is sent (received by someone playing)
 - You die again
 
-On the other hand, when you enter a region you will receive others' legacy when all these conditions are met:
+On the other hand, when you enter a region you will receive someone's legacy when all these conditions are met:
 - There is unsearched corpse in the region
 - You have not received any legacy in the region
-- Another player who died in this region is posting their legacy
+- Another player who just died in this region is posting their legacy  
 
-The received legacy will be inserted into a random unsearched corpse. When you get up close, you will see:
+The received legacy will be inserted into a random unsearched corpse. When you get up close, it will display a note containing these:
 - How many days does the legacy sender survived
 - The content of his ingame general note. If it's empty, it will be replaced with general text.
 
