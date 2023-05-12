@@ -10,7 +10,8 @@ https://github.com/No3371/TLD-SurvivorsLegacy/assets/1814971/b5e2a715-64c2-448b-
 
 This a mod for the game The Long Dark. It enables a minimal way for players to interact with each toher.
 
-When your character die in the game, the mod sends your legacy to a http channel (thanks to patchbay.pub).
+When your character die in the game, the mod sends your legacy to someone else who is playing at the moment.  
+(Nothing is stored online, the transmission only happens when someone is sending and someone is receiving. Thanks to patchbay.pub)
 
 A legacy contains:
 - Three random items on you
