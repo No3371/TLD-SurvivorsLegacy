@@ -8,7 +8,7 @@ https://github.com/No3371/TLD-SurvivorsLegacy/assets/1814971/b5e2a715-64c2-448b-
 >
 > Survive.
 
-This a mod for the game The Long Dark. It enables a minimal way for players to interact with each toher.
+This a mod for the game The Long Dark. It enables a minimal multiplayer interaction.
 
 When your character die in the game, the mod sends your legacy to someone else who is playing at the moment.  
 *(Nothing is stored online, the transmission only happens when someone is sending and someone is receiving. Thanks to patchbay.pub)*
@@ -21,7 +21,7 @@ A legacy contains:
 The sending operation stops when:
 - You close the game (of course, it's not rumning anymore)
 - The legacy is sent (received by someone playing)
-- You die again
+- You die again (and it will start trying to send the new legacy)
 
 On the other hand, when you enter a region you will receive someone's legacy when all these conditions are met:
 - There is unsearched corpse in the region
@@ -33,6 +33,8 @@ The received legacy will be inserted into a random unsearched corpse. When you g
 - The content of his ingame general note. If it's empty, it will be replaced with general text.
 
 And the legacy items can be found on the corpse.
+
+*(Note: the HUD will be a bit glitched after you read the note, and will recover after you loot the corpse)*
 
 ## Dependencies
 
