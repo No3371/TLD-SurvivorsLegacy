@@ -69,6 +69,7 @@ namespace SurvivorsLegacy
 	{
 		static void Postfix ()
 		{
+			if (ContainerManager.m_CorpseContainers == null || ContainerManager.m_CorpseContainers.Count == 0) return;
             Il2CppSystem.Collections.Generic.List<Il2CppTLD.Gear.GearItemObject> items = GameManager.m_Inventory.m_Items;
 			if (items.Count == 0) return;
 			int rand1 = -1, rand2 = -1, rand3 = -1;
