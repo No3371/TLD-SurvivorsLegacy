@@ -149,6 +149,7 @@ namespace SurvivorsLegacy
 				MelonLogger.Msg($"Legacy in {CurrentScene} is already populated.");
 				return;
 			}
+			if (ContainerManager.m_CorpseContainers == null) return;
 			// MelonLogger.Msg($"ContainerManager: {ContainerManager.m_CorpseContainers.Count}");
 			List<Container> qualified = null;
 			foreach  (Container container in ContainerManager.m_CorpseContainers)
@@ -159,6 +160,7 @@ namespace SurvivorsLegacy
 				}
 
 			// MelonLogger.Msg($"Qualified: {qualified.Count}");
+			if (qualified == null) return;
 			if (qualified.Count > 0)
 				MelonCoroutines.Start(Fetch());
 		}
