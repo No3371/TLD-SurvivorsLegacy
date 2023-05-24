@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using HarmonyLib;
 using Il2Cpp;
 using Il2CppTLD.Gear;
@@ -154,11 +154,13 @@ namespace SurvivorsLegacy
 			// MelonLogger.Msg($"ContainerManager: {ContainerManager.m_CorpseContainers.Count}");
 			List<Container> qualified = null;
 			foreach  (Container container in ContainerManager.m_CorpseContainers)
+			{
 				if (!container.IsInspected() && container.isActiveAndEnabled)
 				{
 					if (qualified == null) qualified = new List<Container>();
 					qualified.Add(container);
 				}
+			}
 
 			// MelonLogger.Msg($"Qualified: {qualified.Count}");
 			if (qualified == null) return;
@@ -230,7 +232,7 @@ namespace SurvivorsLegacy
 					break;
 				}
 
-				if (container == null)
+				if (container == null || container.IsInspected())
 				{
                 	MelonLogger.Msg($"Skipping invalid container.");
 					retries++;
@@ -341,7 +343,7 @@ namespace SurvivorsLegacy
 				Panel_HUD panel_HUD = InterfaceManager.GetPanel<Panel_HUD>();
 				panel_HUD.m_CollectibleNoteObjectTitle.text = "Survivor's Legacy";
 				panel_HUD.m_CollectibleNoteObjectTitle.ProcessAndRequest();
-				panel_HUD.m_CollectibleNoteObjectText.text = $"When you get close, you noticed a note on the body:\n\n\n\n{text}\n\n\n\n(Survived for {days} days)";
+				panel_HUD.m_CollectibleNoteObjectText.text = $"Upon approaching, you noticed a note on the body:\n\n\n\n{text}\n\n\n\n(Survived for {days} days)";
 				panel_HUD.m_CollectibleNoteObjectText.ProcessAndRequest();
 				panel_HUD.m_CollectibleNoteObject.gameObject.SetActive(true);
 				reading = true;
