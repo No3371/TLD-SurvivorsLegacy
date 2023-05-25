@@ -224,6 +224,7 @@ namespace SurvivorsLegacy
 			for (int i = UnityEngine.Random.Range(0, ContainerManager.m_CorpseContainers.Count); retries < 10 && i < ContainerManager.m_CorpseContainers.Count; i = UnityEngine.Random.Range(0, ContainerManager.m_CorpseContainers.Count))
 			{
 				yield return wait;
+				if (ContainerManager.m_CorpseContainers == null || ContainerManager.m_CorpseContainers.Count <= i) yield break;
                 Container container = ContainerManager.m_CorpseContainers[i];
 				// MelonLogger.Msg("A");
 				if (SceneLegacies.CurrentScene != sceneName)
