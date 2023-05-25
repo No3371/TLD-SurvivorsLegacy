@@ -80,9 +80,9 @@ namespace SurvivorsLegacy
 				rand3 = UnityEngine.Random.Range(rand2 + 1, items.Count);
 
 			var itemNames = new List<string>();
-			if (rand1 >= -1) itemNames.Add(items[rand1].m_GearItemName);
-			if (rand2 >= -1) itemNames.Add(items[rand2].m_GearItemName);
-			if (rand3 >= -1) itemNames.Add(items[rand3].m_GearItemName);
+			if (rand1 > -1) itemNames.Add(items[rand1].m_GearItemName);
+			if (rand2 > -1) itemNames.Add(items[rand2].m_GearItemName);
+			if (rand3 > -1) itemNames.Add(items[rand3].m_GearItemName);
 
 			Record record;
 			record.items = itemNames.ToArray();
