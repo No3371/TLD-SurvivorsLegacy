@@ -1,4 +1,4 @@
-namespace SurvivorsLegacy
+﻿namespace SurvivorsLegacy
 {
 	public static class BuildInfo
 	{
