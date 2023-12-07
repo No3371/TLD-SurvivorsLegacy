@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using HarmonyLib;
 using Il2Cpp;
 using Il2CppTLD.Gear;
@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace SurvivorsLegacy
 {
-	internal class SurvivorsLegacy : MelonMod
+    internal class SurvivorsLegacy : MelonMod
     {
 		internal static SurvivorsLegacy Instance { get; private set; }
 		internal ModDataManager ModData { get; private set; } = new ModDataManager(nameof(SurvivorsLegacy));
@@ -22,6 +22,7 @@ namespace SurvivorsLegacy
 			Instance = this;
 			uConsole.RegisterCommand("sl_here", new Action(LegacyHere));
 			uConsole.RegisterCommand("sl_l", new Action(Legacies));
+			// uConsole.RegisterCommand("sl_n", new Action(LongNote));
 		}
 		void LegacyHere ()
 		{
@@ -34,6 +35,17 @@ namespace SurvivorsLegacy
 			int.TryParse(ModData.Load("legacies"), out int legacies);
 			ShowLegaciesMessage(legacies);
 		}
+
+		// void LongNote ()
+		// {
+		// 	const string str = "Dam - Momento\n    - Saplings (x)\n\nCampOffice - Momento (x)\n\nLake - Hut A - Tackle x3\n\n\nahhhh the bearrrr....\noh I made it back\n\nrunning out of whetstone\nwasted too much on logs\n\ndont chop wood logs just because you got a hatchet!Dam - Momento\n    - Saplings (x)\n\nCampOffice - Momento (x)\n\nLake - Hut A - Tackle x3\n\n\nahhhh the bearrrr....\noh I made it back\n\nrunning out of whetstone\nwasted too much on logs\n\ndont chop wood logs just because you got a hatchet!Dam - Momento\n    - Saplings (x)\n\nCampOffice - Momento (x)\n\nLake - Hut A - Tackle x3\n\n\nahhhh the bearrrr....\noh I made it back\n\nrunning out of whetstone\nwasted too much on logs\n\ndont chop wood logs just because you got a hatchet!";
+		// 	Panel_HUD panel_HUD = InterfaceManager.GetPanel<Panel_HUD>();
+		// 	panel_HUD.m_CollectibleNoteObjectTitle.text = "Survivor's Legacy";
+		// 	panel_HUD.m_CollectibleNoteObjectTitle.ProcessAndRequest();
+		// 	panel_HUD.m_CollectibleNoteObjectText.text = $"When you get close, you noticed a note on the body:\n\n\n\n{str}\n\n\n\n(Survived for 999 days)";
+		// 	panel_HUD.m_CollectibleNoteObjectText.ProcessAndRequest();
+		// 	panel_HUD.m_CollectibleNoteObject.gameObject.SetActive(true);
+		// }
 
         internal void ShowLegaciesMessage (int count)
 		{
@@ -84,7 +96,7 @@ namespace SurvivorsLegacy
 			if (rand2 > -1) itemNames.Add(items[rand2].m_GearItemName);
 			if (rand3 > -1) itemNames.Add(items[rand3].m_GearItemName);
 
-			Record record;
+			LegacyRecord record;
 			record.items = itemNames.ToArray();
 			record.note = GameManager.m_Log.m_GeneralNotes;
 			record.days = GameManager.m_TimeOfDay.m_DaysSurvivedLastFrame;
@@ -107,6 +119,7 @@ namespace SurvivorsLegacy
 			msg = AesOperation.EncryptString(msg);
 			var sceneNameEncrypted = AesOperation.EncryptString(sceneName);
 			var b64 = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(sceneNameEncrypted));
+			// MelonLogger.Msg($"Legacy message prepared: {b64}");
 			var post = sender.PostAsync($"https://patchbay.pub/tld-survivorslegacy-{b64}", new StringContent(msg));
 			MelonLogger.Msg($"Posting legacy...");
 			var w = new WaitForSecondsRealtime(60);
@@ -131,7 +144,7 @@ namespace SurvivorsLegacy
 	{
 		internal static string CurrentScene { get; set; }
 		internal static bool CurrentScenePopulated { get; set; }
-		internal static Record fetched;
+		internal static LegacyRecord fetched;
 		static Task<HttpResponseMessage> get;
 		// internal static List<Container> queue;
 		internal static object resolver;
@@ -279,12 +292,12 @@ namespace SurvivorsLegacy
 			resolver = null;
 		}
 
-		static void AddLegacyToContainer (Record record, Container container)
+		static void AddLegacyToContainer (LegacyRecord record, Container container)
 		{
 			if (record.items != null)
-				foreach (var item in record.items)
+				foreach (string item in record.items)
 				{
-					var gi = GearItem.InstantiateGearItem(item);
+					GearItem gi = GearItem.InstantiateGearItem(item);
 					if (gi == null) continue;
 					gi.RollGearCondition(true);
 					// MelonLogger.Msg($"Gear condition rolled to " + gi.GetRoundedCondition());
@@ -293,7 +306,7 @@ namespace SurvivorsLegacy
 				}
 		}
 
-		internal static Record? Decode (string msg)
+		public static LegacyRecord? Decode (string msg)
 		{
 			var proxy = MelonLoader.TinyJSON.Decoder.Decode(msg) as MelonLoader.TinyJSON.ProxyObject;
 			if (proxy == null) return null;
@@ -313,57 +326,12 @@ namespace SurvivorsLegacy
 			}
 			else return null;
 
-			Record record;
+			LegacyRecord record;
 			record.days = days;
 			record.items = items;
 			record.note = note;
 			return record;
 
 		}
-	}
-
-	[HarmonyPatch(typeof(ContainerInteraction), nameof(ContainerInteraction.InitializeInteraction))]
-	internal static class Note
-	{
-		internal static bool reading;
-		static void Prefix (ContainerInteraction __instance)
-		{
-			bool searched = SurvivorsLegacy.Instance.ModData.Load($"{SceneLegacies.CurrentScene}.searched") == "Y";
-			if (!searched)
-			{
-				Container c = __instance.m_Container;
-				string cName = c?.name;
-				if (cName == null) cName = c?.name;
-				if (cName == null) cName = c?.name;
-				// MelonLogger.Msg($"Reading note on {cName}... ? {SurvivorsLegacy.Instance.ModData.Load($"{SceneLegacies.CurrentScene}.corpse")}");
-				if (!c.m_IsCorpse || cName != SurvivorsLegacy.Instance.ModData.Load($"{SceneLegacies.CurrentScene}.corpse")) return;
-				var text = SurvivorsLegacy.Instance.ModData.Load($"{SceneLegacies.CurrentScene}.note");
-				var days =  SurvivorsLegacy.Instance.ModData.Load($"{SceneLegacies.CurrentScene}.days");
-				MelonLogger.Msg($"reading for {SceneLegacies.CurrentScene}.note : {text}");
-				if (string.IsNullOrWhiteSpace(text)) text = "Take my stuff...\n\nSurvive.";
-				Panel_HUD panel_HUD = InterfaceManager.GetPanel<Panel_HUD>();
-				panel_HUD.m_CollectibleNoteObjectTitle.text = "Survivor's Legacy";
-				panel_HUD.m_CollectibleNoteObjectTitle.ProcessAndRequest();
-				panel_HUD.m_CollectibleNoteObjectText.text = $"Upon approaching, you noticed a note on the body:\n\n\n\n{text}\n\n\n\n(Survived for {days} days)";
-				panel_HUD.m_CollectibleNoteObjectText.ProcessAndRequest();
-				panel_HUD.m_CollectibleNoteObject.gameObject.SetActive(true);
-				reading = true;
-				SurvivorsLegacy.Instance.ModData.Save("Y", $"{SceneLegacies.CurrentScene}.searched");
-				int.TryParse(SurvivorsLegacy.Instance.ModData.Load("legacies"), out int legacies);
-				legacies += 1;
-				SurvivorsLegacy.Instance.ModData.Save(legacies.ToString(), "legacies");
-				SurvivorsLegacy.Instance.ShowLegaciesMessage(legacies);
-				GameManager.SaveGame();
-				return;
-			}
-		}
-	}
-
-
-	public struct Record
-	{
-		public int days;
-		public string[] items;
-		public string note;
 	}
 }

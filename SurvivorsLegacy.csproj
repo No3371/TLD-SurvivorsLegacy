@@ -29,7 +29,7 @@
     <!--This tells the compiler where to look for assemblies. Don't change it.-->
     <PropertyGroup>
         <!--This needs to be changed for the mod to compile.-->
-        <TheLongDarkPath>..\..\</TheLongDarkPath>
+        <TheLongDarkPath>..\..\..\</TheLongDarkPath>
         <MelonLoaderPath>$(TheLongDarkPath)/MelonLoader/net6</MelonLoaderPath>
         <ManagedPath>$(TheLongDarkPath)/MelonLoader/Managed</ManagedPath>
         <Il2CppPath>$(TheLongDarkPath)/MelonLoader/Il2CppAssemblies</Il2CppPath>
@@ -50,10 +50,10 @@
     <!--This is the list of assemblies that the mod references. Most of these are unnecessary for normal mods, but are included here for completeness.-->
     <ItemGroup>
         <Reference Include="Il2CppInterop.Common">
-          <HintPath>..\..\MelonLoader\net6\Il2CppInterop.Common.dll</HintPath>
+          <HintPath>..\..\..\MelonLoader\net6\Il2CppInterop.Common.dll</HintPath>
         </Reference>
         <Reference Include="Il2CppInterop.Runtime">
-          <HintPath>..\..\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
+          <HintPath>..\..\..\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
         </Reference>
         <Reference Include="MelonLoader" />
         <Reference Include="0Harmony" />
@@ -85,6 +85,7 @@
         <Reference Include="ModData"/>
         <Reference Include="Unity.Mathematics" />
         <Reference Include="Unity.TextMeshPro" />
+        <Reference Include="Unity.Addressables" />
         <Reference Include="UnityEngine.AssetBundleModule" />
         <Reference Include="UnityEngine.CoreModule" />
         <Reference Include="UnityEngine" />
@@ -93,7 +94,7 @@
         <Reference Include="UnityEngine.Il2CppAssetBundleManager" />
         <Reference Include="UnityEngine.Il2CppImageConversionManager" />
         <Reference Include="UnityEngine.PhysicsModule">
-          <HintPath>..\..\MelonLoader\Il2CppAssemblies\UnityEngine.PhysicsModule.dll</HintPath>
+          <HintPath>..\..\..\MelonLoader\Il2CppAssemblies\UnityEngine.PhysicsModule.dll</HintPath>
         </Reference>
         <Reference Include="KeyboardUtilities" />
     </ItemGroup>
