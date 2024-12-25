@@ -298,7 +298,7 @@ namespace SurvivorsLegacy
 				{
 					GearItem gi = GearItem.InstantiateGearItem(item);
 					if (gi == null) continue;
-					gi.RollGearCondition(true);
+					gi.RollGearCondition(GearStartCondition.Random);
 					// MelonLogger.Msg($"Gear condition rolled to " + gi.GetRoundedCondition());
 					container.AddGear(gi);
 					// MelonLogger.Msg($"Added {item} to {container.name} at {container.gameObject.transform.position}");
