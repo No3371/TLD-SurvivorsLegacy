@@ -82,19 +82,18 @@ namespace SurvivorsLegacy
 		static void Postfix ()
 		{
 			if (ContainerManager.m_CorpseContainers == null || ContainerManager.m_CorpseContainers.Count == 0) return;
-            Il2CppSystem.Collections.Generic.List<Il2CppTLD.Gear.GearItemObject> items = GameManager.m_Inventory.m_Items;
-			if (items.Count == 0) return;
-			int rand1 = -1, rand2 = -1, rand3 = -1;
-			rand1 = UnityEngine.Random.Range(0, items.Count);
-			if (items.Count - rand1 > 1)
-				rand2 = UnityEngine.Random.Range(rand1 + 1, items.Count);
-			if (items.Count - rand2 > 1)
-				rand3 = UnityEngine.Random.Range(rand2 + 1, items.Count);
-
 			var itemNames = new List<string>();
-			if (rand1 > -1) itemNames.Add(items[rand1].m_GearItemName);
-			if (rand2 > -1) itemNames.Add(items[rand2].m_GearItemName);
-			if (rand3 > -1) itemNames.Add(items[rand3].m_GearItemName);
+            Il2CppSystem.Collections.Generic.List<Il2CppTLD.Gear.GearItemObject> items = GameManager.m_Inventory.m_Items;
+			foreach (var item in items)
+			{
+				if (itemNames.Count >= 15)
+				    break;
+				
+				if (UnityEngine.Random.Range(0f, 1f) < 0.5f)
+				{
+					itemNames.Add(item.m_GearItemName);
+				}
+			}
 
 			LegacyRecord record;
 			record.items = itemNames.ToArray();
@@ -320,7 +319,7 @@ namespace SurvivorsLegacy
 			string[]? items = null;
 			if (itemArr != null)
 			{
-				var count = Mathf.Min(itemArr.Count, 3);
+				var count = Mathf.Min(itemArr.Count, 15);
 				items = new string[count];
 				for (int i = 0; i < count; i++) items[i] = itemArr[i];
 			}
